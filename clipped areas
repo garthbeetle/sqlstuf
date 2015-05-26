@@ -1,0 +1,5 @@
+get proportional area:
+
+select st_area(st_intersection(zo.geom, buff.geom))/st_area(zo.geom) as ratio from tz_nsw_2011 as zo,
+(select st_union(st_buffer(rd.geom, 800)) as geom, row_number() over() from parramatta_rd as rd) as buff
+where st_dwithin(zo.geom, buff.geom, 800) and st_area(st_intersection(zo.geom, buff.geom))<>0;
