@@ -3,3 +3,9 @@ get proportional area:
 select st_area(st_intersection(zo.geom, buff.geom))/st_area(zo.geom) as ratio from tz_nsw_2011 as zo,
 (select st_union(st_buffer(rd.geom, 800)) as geom, row_number() over() from parramatta_rd as rd) as buff
 where st_dwithin(zo.geom, buff.geom, 800) and st_area(st_intersection(zo.geom, buff.geom))<>0;
+
+create table parra_rd_proportion as select st_area(st_intersection(zo.geom, buff.geom))/st_area(zo.geom) as ratio, zo.tz_code11 as tz from tz_nsw_2011 as zo,
+(select st_union(st_buffer(rd.geom, 800)) as geom, row_number() over() from parramatta_rd as rd) as buff
+where st_dwithin(zo.geom, buff.geom, 800) and st_area(st_intersection(zo.geom, buff.geom))<>0;
+
+update tzemp set parra_rd_proportion = p.ratio from parra_rd_proportion p where p.tz = tzemp.tz;
